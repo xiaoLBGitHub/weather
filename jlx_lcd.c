@@ -1,4 +1,5 @@
-#include "main.h"
+#include "jlx_lcd.h"
+
 
 void transfer_command_lcd(int cmd)
 {
@@ -65,6 +66,23 @@ void display_graphic_8x16(uint page,uchar column,uchar *dp)
     LCD_CSL = 1;
 }
 
+void display_graphic_16x32(uint page,uchar column,uchar *dp)
+{
+    uint i,j;
+    LCD_CSL = 0;
+    for (j = 0; j < 4; j++)
+    {
+        lcd_address(page,column);
+        for (i = 0; i < 16; i++)
+        {
+            transfer_data_lcd(*dp);
+            dp++;
+        }
+        page++;
+    }
+    LCD_CSL = 1;
+}
+
 void delayms(uint ms)		//@11.0592MHz
 {
     unsigned char i, j;
@@ -121,5 +139,10 @@ void clear_screen()
 
 void test_lcd()
 {
-    
+    initial_lcd();
+    display_graphic_16x32(0,0,zk_num[0]);
+    display_graphic_16x32(0,16,zk_num[1]);
+    display_graphic_16x32(0,32,zk_num[10]);
+    display_graphic_16x32(0,48,zk_num[2]);
+    display_graphic_16x32(0,64,zk_num[3]);    
 }
